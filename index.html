@@ -4,7 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DaxTer Creator - PSP Compression Utility</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    
+    <!-- React & ReactDOM (Development versions for better error messages, use production for live) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel for on-the-fly JSX compilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Fonts & Icons -->
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
@@ -13,6 +24,7 @@
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+    
     <script>
       tailwind.config = {
         darkMode: "class",
@@ -41,7 +53,7 @@
       };
     </script>
     <style>
-      /* Custom Scrollbar for Webkit */
+      /* Custom Scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }
@@ -67,11 +79,19 @@
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
       }
+      
+      /* Simple animations */
+      @keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-up {
+        animation: fade-in-up 0.5s ease-out forwards;
+      }
     </style>
   <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3"
   }
@@ -80,5 +100,796 @@
 </head>
   <body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark font-display transition-colors duration-300">
     <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+
+      // --- Components ---
+
+      // Navbar Component
+      const Navbar = ({ darkMode, toggleDarkMode }) => {
+        const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+        const navLinks = [
+          { name: 'Features', href: '#features' },
+          { name: 'Technical Details', href: '#details' },
+          { name: 'Installation', href: '#install' },
+          { name: 'Contact', href: '#contact' },
+        ];
+
+        return (
+          <nav className="sticky top-0 z-50 w-full bg-surface-light/90 dark:bg-surface-dark/90 border-b border-border-light dark:border-border-dark glass-panel">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between h-16 items-center">
+                {/* Logo */}
+                <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo(0,0)}>
+                  <div className="bg-primary p-2 rounded-lg text-white shadow-md">
+                    <span className="material-icons text-xl block">extension</span>
+                  </div>
+                  <span className="font-bold text-xl tracking-tight text-gray-900 dark:text-white select-none">
+                    DaxTer<span className="text-primary">Creator</span>
+                  </span>
+                </div>
+
+                {/* Desktop Nav */}
+                <div className="hidden md:flex space-x-8 items-center">
+                  {navLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors font-medium text-sm lg:text-base"
+                    >
+                      {link.name}
+                    </a>
+                  ))}
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center space-x-4">
+                  <div className="relative hidden sm:block group">
+                    <input
+                      type="text"
+                      placeholder="Search software..."
+                      className="bg-gray-100 dark:bg-gray-800 border-none rounded-full py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-primary w-48 text-gray-900 dark:text-gray-100 transition-all group-hover:w-56"
+                    />
+                    <span className="material-icons absolute left-3 top-2 text-gray-400 text-sm pointer-events-none">
+                      search
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={toggleDarkMode}
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                    aria-label="Toggle Dark Mode"
+                  >
+                    {darkMode ? (
+                      <span className="material-icons block">light_mode</span>
+                    ) : (
+                      <span className="material-icons block">dark_mode</span>
+                    )}
+                  </button>
+
+                  {/* Mobile Menu Button */}
+                  <div className="md:hidden flex items-center">
+                    <button
+                      onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                      className="text-gray-600 dark:text-gray-300 hover:text-primary focus:outline-none p-2"
+                    >
+                      <span className="material-icons">
+                        {isMobileMenuOpen ? 'close' : 'menu'}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile Menu Dropdown */}
+            {isMobileMenuOpen && (
+              <div className="md:hidden bg-surface-light dark:bg-surface-dark border-t border-border-light dark:border-border-dark shadow-lg">
+                <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                  {navLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      className="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary block px-3 py-2 rounded-md text-base font-medium"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.name}
+                    </a>
+                  ))}
+                  <div className="px-3 py-2 relative sm:hidden">
+                    <input
+                      type="text"
+                      placeholder="Search..."
+                      className="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-primary text-gray-900 dark:text-gray-100"
+                    />
+                    <span className="material-icons absolute left-6 top-4 text-gray-400 text-sm pointer-events-none">
+                      search
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </nav>
+        );
+      };
+
+      // Hero Component
+      const Hero = () => {
+        return (
+          <header className="relative overflow-hidden pt-16 pb-24 lg:pt-32 lg:pb-40">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+              <div className="lg:grid lg:grid-cols-12 lg:gap-16 items-center">
+                
+                {/* Left Content */}
+                <div className="lg:col-span-6 text-center lg:text-left mb-12 lg:mb-0">
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-primary text-sm font-semibold mb-6 border border-blue-200 dark:border-blue-800 animate-fade-in-up">
+                    <span className="mr-2">★</span> Version 2.5 Available
+                  </div>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 text-gray-900 dark:text-white leading-tight">
+                    Master Your <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400">
+                      PSP Collection
+                    </span>
+                  </h1>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                    Compress and decompress ISO games and movies for your PlayStation
+                    Portable. Save space without sacrificing quality with the ultimate
+                    utility tool.
+                  </p>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <button className="flex items-center justify-center gap-2 bg-secondary hover:bg-amber-600 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 active:translate-y-0">
+                      <span className="material-icons">download</span>
+                      <div className="text-left">
+                        <div className="text-xs uppercase opacity-90 font-medium">Download Now</div>
+                        <div className="text-lg leading-none">Version 2.5</div>
+                      </div>
+                    </button>
+                    <button className="flex items-center justify-center gap-2 bg-white dark:bg-gray-800 border border-border-light dark:border-border-dark text-gray-700 dark:text-gray-200 font-semibold py-4 px-8 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm hover:shadow-md">
+                      <span className="material-icons text-gray-400">info</span>
+                      Learn More
+                    </button>
+                  </div>
+
+                  <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <span className="material-icons text-green-500 text-base">verified_user</span>
+                      100% Secure
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="material-icons text-gray-400 text-base">windows</span>
+                      Windows XP/7/10/11
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="material-icons text-gray-400 text-base">money_off</span>
+                      Freeware
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Image */}
+                <div className="lg:col-span-6 relative">
+                  <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-primary/20 rounded-full blur-3xl dark:bg-primary/10 animate-pulse"></div>
+                  <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-secondary/20 rounded-full blur-3xl dark:bg-secondary/10 animate-pulse" style={{animationDelay: '1s'}}></div>
+                  
+                  <div className="relative bg-surface-light dark:bg-surface-dark rounded-xl shadow-2xl border border-border-light dark:border-border-dark overflow-hidden transform rotate-1 hover:rotate-0 transition-transform duration-500 group">
+                    <div className="bg-gray-100 dark:bg-gray-800 border-b border-border-light dark:border-border-dark px-4 py-3 flex items-center gap-2">
+                      <div className="flex gap-1.5">
+                        <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                      </div>
+                      <div className="flex-1 text-center text-xs font-medium text-gray-500 dark:text-gray-400 font-mono">
+                        DaxTer Creator v2.5.exe
+                      </div>
+                    </div>
+                    <div className="relative aspect-video bg-gray-900">
+                      <img 
+                          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuIyCK-2jKscVNaSuG8NLmzedqAmGn_vJ6V8viYW7lT7wuqlmpygdGULIwbEs9_w9KGKAc9hjJ0RBRGou7yaqNx7oO2jOgXCQ-t6xK7VkKnvh8KaI9fHOA3JtWg58U5_fOsM2PWl0-EgM-O7W-2KvY8LHgqlQunQzNjyqhKxsGxtOX3uoFPUnsDxFmW18fKF2N2bYT8PMzdU11tjJMQK_XDHtApK83vZqFuFnS_fO218mwCesOx_-L2UJLcPmdcTMaolj3l681vqA" 
+                          alt="DaxTer Creator Interface"
+                          className="w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity"
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 text-center transform scale-90 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300">
+                              <p className="font-bold text-gray-800 dark:text-white">Preview Interface</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Classic layout, powerful engine</p>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </header>
+        );
+      };
+
+      // InfoSection Component
+      const InfoSection = () => {
+        return (
+          <React.Fragment>
+            {/* Why Use Section */}
+            <section className="py-16 bg-white dark:bg-gray-900 border-t border-border-light dark:border-border-dark">
+              <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">
+                  Why use DaxTer Creator?
+                </h2>
+                <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-10">
+                  DaxTer Creator is a surprising application created by fans, for fans. Its
+                  main objective is to compress and decompress movies and games for the{" "}
+                  <strong className="text-primary">Sony PSP</strong> console. The handling
+                  is incredibly simple, featuring an intuitive interface where you only
+                  need to fill in a few fields: the original ISO file location and your
+                  desired destination path.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  {['Multimedia', 'System Tools', 'PSP Utilities', 'ISO to CSO'].map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium border border-border-light dark:border-border-dark hover:border-primary/50 transition-colors cursor-default"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Capabilities Section */}
+            <section id="features" className="py-20 bg-background-light dark:bg-background-dark">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-16">
+                  <h2 className="text-base text-primary font-semibold tracking-wide uppercase">
+                    Capabilities
+                  </h2>
+                  <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                    Powerful Compression Made Simple
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {[
+                    {
+                      title: 'ISO to CSO',
+                      desc: 'Efficiently convert bulky ISO files into compressed CSO format to save valuable memory stick space without losing playability.',
+                      icon: 'compress',
+                    },
+                    {
+                      title: 'Fast Processing',
+                      desc: 'Optimized algorithms ensure that your files are processed quickly. Includes batch processing options for multiple files.',
+                      icon: 'speed',
+                    },
+                    {
+                      title: 'User Friendly',
+                      desc: 'A clean, no-nonsense interface designed for everyone. From NC areas to compression levels, control every aspect easily.',
+                      icon: 'settings_suggest',
+                    },
+                  ].map((feature, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-border-light dark:border-border-dark flex flex-col items-start"
+                    >
+                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-6 text-primary">
+                        <span className="material-icons text-2xl">{feature.icon}</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* Workflow Section */}
+            <section className="py-24 bg-white dark:bg-gray-900 border-t border-border-light dark:border-border-dark relative overflow-hidden">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="text-center mb-16">
+                  <h2 className="text-base text-primary font-semibold tracking-wide uppercase">
+                    Easy Workflow
+                  </h2>
+                  <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                    Quick Start Guide
+                  </p>
+                  <p className="mt-4 max-w-2xl text-lg text-gray-500 dark:text-gray-400 mx-auto">
+                    Optimize your game library in three simple steps.
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-10 relative">
+                  <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-1 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"></div>
+                  
+                  {[
+                    {
+                      step: 1,
+                      title: 'Select Files',
+                      desc: 'Choose your ISO or game files from your computer. Supports batch selection for multiple games.',
+                      icon: 'folder_open',
+                      colorClass: 'text-primary',
+                      bgClass: 'bg-blue-50 dark:bg-blue-900/30',
+                      badgeBg: 'bg-primary'
+                    },
+                    {
+                      step: 2,
+                      title: 'Configure Settings',
+                      desc: 'Pick compression level (1-9) to balance size vs speed, and choose your output folder.',
+                      icon: 'tune',
+                      colorClass: 'text-secondary',
+                      bgClass: 'bg-amber-50 dark:bg-amber-900/30',
+                      badgeBg: 'bg-secondary'
+                    },
+                    {
+                      step: 3,
+                      title: 'Start Compression',
+                      desc: "Click 'Compress' and wait for the magic. The optimized CSO file is created automatically.",
+                      icon: 'play_arrow',
+                      colorClass: 'text-green-500',
+                      bgClass: 'bg-green-50 dark:bg-green-900/30',
+                      badgeBg: 'bg-green-500'
+                    },
+                  ].map((item) => (
+                    <div key={item.step} className="relative group">
+                      <div className="relative bg-surface-light dark:bg-surface-dark p-8 rounded-2xl shadow-lg border border-border-light dark:border-border-dark text-center transition-transform duration-300 hover:-translate-y-2 h-full">
+                        <div className={`w-20 h-20 mx-auto ${item.bgClass} rounded-full flex items-center justify-center mb-6 shadow-inner ring-4 ring-white dark:ring-gray-800`}>
+                          <span className={`material-icons text-4xl ${item.colorClass}`}>{item.icon}</span>
+                        </div>
+                        <div className={`absolute -top-4 -right-4 w-10 h-10 ${item.badgeBg} text-white rounded-full flex items-center justify-center font-bold shadow-md transform group-hover:scale-110 transition-transform`}>
+                          {item.step}
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                          {item.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                          {item.desc}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </React.Fragment>
+        );
+      };
+
+      // TechDetails Component
+      const TechDetails = () => {
+        return (
+          <section
+            id="details"
+            className="py-20 bg-background-light dark:bg-background-dark border-t border-border-light dark:border-border-dark"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid lg:grid-cols-2 gap-16">
+                
+                {/* Tech Spec Table */}
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                    <span className="material-icons text-primary">info</span>
+                    Technical Information
+                  </h3>
+                  <div className="overflow-hidden bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm">
+                    <table className="min-w-full divide-y divide-border-light dark:divide-border-dark">
+                      <tbody className="divide-y divide-border-light dark:divide-border-dark">
+                        {[
+                          { label: 'License', value: 'Freeware', highlight: 'text-green-600 dark:text-green-400 font-semibold' },
+                          { label: 'Version', value: '2.5' },
+                          { label: 'Operating System', value: 'Windows 2000 / XP / Vista / 7 / 10' },
+                          { label: 'Language', value: 'Spanish / English' },
+                          { label: 'File Size', value: '< 0.01 MB' },
+                          { label: 'Category', value: 'Multimedia Tools', highlight: 'text-primary hover:underline cursor-pointer' },
+                        ].map((row, idx) => (
+                          <tr
+                            key={idx}
+                            className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                          >
+                            <td className="px-6 py-4 text-sm font-medium text-gray-500 dark:text-gray-400 w-1/3">
+                              {row.label}
+                            </td>
+                            <td className={`px-6 py-4 text-sm text-gray-900 dark:text-white ${row.highlight || ''}`}>
+                              {row.value}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Installation Guide */}
+                <div id="install">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+                    <span className="material-icons text-primary">build</span>
+                    How to Install
+                  </h3>
+                  <div className="bg-blue-50 dark:bg-gray-800/50 rounded-xl p-8 border border-blue-100 dark:border-gray-700">
+                    <ol className="relative border-l border-gray-200 dark:border-gray-700 ml-3">
+                      <li className="mb-8 ml-6">
+                        <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 shadow-md">
+                          <span className="text-white text-sm font-bold">1</span>
+                        </span>
+                        <h4 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">
+                          Download & Locate
+                        </h4>
+                        <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                          Find the DaxTer Creator archive in your downloads folder.
+                        </p>
+                      </li>
+                      <li className="mb-8 ml-6">
+                        <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 shadow-md">
+                          <span className="text-white text-sm font-bold">2</span>
+                        </span>
+                        <h4 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">
+                          Unzip File
+                        </h4>
+                        <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                          Windows: Press{' '}
+                          <kbd className="px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-xs text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600">
+                            Ctrl
+                          </kbd>{' '}
+                          +{' '}
+                          <kbd className="px-2 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-xs text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-600">
+                            J
+                          </kbd>{' '}
+                          to find downloads, then right-click and "Extract All".
+                        </p>
+                      </li>
+                      <li className="mb-8 ml-6">
+                        <span className="absolute flex items-center justify-center w-8 h-8 bg-primary rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 shadow-md">
+                          <span className="text-white text-sm font-bold">3</span>
+                        </span>
+                        <h4 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">
+                          Run Installer
+                        </h4>
+                        <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                          Double click the extracted file. Follow the on-screen
+                          instructions.
+                        </p>
+                      </li>
+                      <li className="ml-6">
+                        <span className="absolute flex items-center justify-center w-8 h-8 bg-green-500 rounded-full -left-4 ring-4 ring-white dark:ring-gray-900 shadow-md animate-bounce" style={{animationDuration: '2s'}}>
+                          <span className="material-icons text-white text-sm">check</span>
+                        </span>
+                        <h4 className="font-semibold text-gray-900 dark:text-white text-lg mb-1">
+                          Ready to use!
+                        </h4>
+                        <p className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                          Enjoy DaxTer Creator for free.
+                        </p>
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // Contact Component
+      const Contact = () => {
+        const [formData, setFormData] = useState({
+          name: '',
+          email: '',
+          message: ''
+        });
+        const [status, setStatus] = useState('idle');
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          setStatus('submitting');
+          // Simulate API call
+          setTimeout(() => {
+              setStatus('success');
+              setFormData({ name: '', email: '', message: '' });
+              setTimeout(() => setStatus('idle'), 3000);
+          }, 1500);
+        };
+
+        const handleChange = (e) => {
+            setFormData({...formData, [e.target.id]: e.target.value});
+        };
+
+        const socialLinks = [
+          { icon: 'facebook', href: '#' },
+          { icon: 'rss_feed', href: '#' },
+          { icon: 'code', href: 'https://github.com/tu-usuario' }
+        ];
+
+        return (
+          <section
+            id="contact"
+            className="py-20 bg-white dark:bg-gray-900 border-t border-border-light dark:border-border-dark"
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-base text-primary font-semibold tracking-wide uppercase">
+                  Support
+                </h2>
+                <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-4xl">
+                  Contact Us
+                </p>
+                <p className="mt-4 max-w-2xl text-lg text-gray-500 dark:text-gray-400 mx-auto">
+                  Have questions or need assistance with compression settings? We're here
+                  to help.
+                </p>
+              </div>
+
+              <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+                {/* Contact Info */}
+                <div className="flex flex-col justify-center space-y-8">
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                      Get in touch
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+                      Whether you have a suggestion for the next version, need help
+                      with installation, or just want to say hello, we'd love to hear
+                      from you. Our team typically responds within 24 hours.
+                    </p>
+                  </div>
+                  <div className="space-y-6">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-lg text-primary">
+                        <span className="material-icons">email</span>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Email Us
+                        </h4>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          support@daxtercreator.com
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="bg-blue-100 dark:bg-blue-900/50 p-3 rounded-lg text-primary">
+                        <span className="material-icons">forum</span>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Community Forum
+                        </h4>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          Join the discussion on our forums
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pt-4">
+                    <h4 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+                      Follow Us
+                    </h4>
+                    <div className="flex space-x-4">
+                      {socialLinks.map((item, idx) => (
+                        <a
+                          key={idx}
+                          href={item.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-gray-100 dark:bg-gray-800 p-3 rounded-full text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all transform hover:scale-110"
+                        >
+                          <span className="material-icons text-xl">{item.icon}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Contact Form */}
+                <div className="bg-background-light dark:bg-background-dark p-8 rounded-2xl border border-border-light dark:border-border-dark shadow-sm">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      >
+                        Full Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        placeholder="John Doe"
+                        className="w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-900 dark:text-white focus:border-primary focus:ring-primary shadow-sm outline-none ring-1 ring-transparent focus:ring-2 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      >
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        placeholder="john@example.com"
+                        className="w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-900 dark:text-white focus:border-primary focus:ring-primary shadow-sm outline-none ring-1 ring-transparent focus:ring-2 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="message"
+                        className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                      >
+                        Message
+                      </label>
+                      <textarea
+                        id="message"
+                        rows={4}
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        placeholder="How can we help you?"
+                        className="w-full px-4 py-3 rounded-lg border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-900 dark:text-white focus:border-primary focus:ring-primary shadow-sm outline-none ring-1 ring-transparent focus:ring-2 transition-all resize-none"
+                      ></textarea>
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={status !== 'idle'}
+                      className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white transition-all ${
+                          status === 'success' ? 'bg-green-500 hover:bg-green-600' : 'bg-primary hover:bg-blue-600'
+                      } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}
+                    >
+                      {status === 'submitting' ? 'Sending...' : status === 'success' ? 'Message Sent!' : 'Send Message'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      };
+
+      // Footer Component
+      const Footer = () => {
+        const socialLinks = [
+          { name: 'Twitter', label: 'TW', href: '#' },
+          { name: 'Facebook', label: 'FB', href: '#' },
+          { name: 'GitHub', label: 'GH', href: 'https://github.com/tu-usuario' },
+        ];
+
+        return (
+          <React.Fragment>
+            {/* Bottom CTA */}
+            <section className="py-16 bg-primary dark:bg-blue-900 relative overflow-hidden">
+              <div className="absolute inset-0 opacity-10" style={{
+                  backgroundImage: 'radial-gradient(circle, #ffffff 2px, transparent 2.5px)',
+                  backgroundSize: '20px 20px'
+              }}></div>
+              
+              <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
+                <h2 className="text-3xl font-bold text-white mb-4">
+                  Start Saving Space on Your PSP
+                </h2>
+                <p className="text-blue-100 mb-8 font-medium">
+                  Join thousands of users optimizing their portable gaming library today.
+                </p>
+                <button className="bg-secondary hover:bg-amber-600 text-white font-bold py-4 px-12 rounded-lg shadow-xl text-lg transition-transform transform hover:scale-105 flex items-center gap-2 mx-auto active:scale-95">
+                  <span className="material-icons">download</span>
+                  Download Latest Version
+                </button>
+                <p className="mt-4 text-xs text-blue-200 opacity-80">
+                  *Compatible with Windows OS. No specialized hardware required.
+                </p>
+              </div>
+            </section>
+
+            {/* Main Footer */}
+            <footer className="bg-surface-dark text-gray-300 py-12 border-t border-gray-800">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="flex items-center gap-2 mb-4">
+                      <span className="material-icons text-primary">extension</span>
+                      <span className="font-bold text-xl text-white">
+                        DaxTer Creator
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-400 max-w-xs">
+                      The definitive tool for PSP ISO/CSO compression. Made by the
+                      community, for the community.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-semibold mb-4">Legal</h4>
+                    <ul className="space-y-2 text-sm">
+                      <li>
+                        <a href="#" className="hover:text-primary transition-colors">
+                          Privacy Policy
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="hover:text-primary transition-colors">
+                          Terms of Service
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#" className="hover:text-primary transition-colors">
+                          Cookie Policy
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-white font-semibold mb-4">Connect</h4>
+                    <div className="flex space-x-4">
+                      {socialLinks.map((social) => (
+                        <a
+                          key={social.name}
+                          href={social.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all transform hover:rotate-12"
+                          aria-label={social.name}
+                        >
+                          <span className="text-xs font-bold">{social.label}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-12 pt-8 border-t border-gray-800 text-center text-xs text-gray-500">
+                  © {new Date().getFullYear()} DaxTer Creator. All rights reserved. Not affiliated
+                  with Sony.
+                </div>
+              </div>
+            </footer>
+          </React.Fragment>
+        );
+      };
+
+      // Main App Component
+      const App = () => {
+        const [darkMode, setDarkMode] = useState(false);
+
+        // Initialize dark mode based on system preference or storage
+        useEffect(() => {
+          const isDark = localStorage.getItem('theme') === 'dark' || 
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          setDarkMode(isDark);
+        }, []);
+
+        // Update HTML class and localStorage when darkMode changes
+        useEffect(() => {
+          if (darkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+          }
+        }, [darkMode]);
+
+        const toggleDarkMode = () => {
+          setDarkMode(prev => !prev);
+        };
+
+        return (
+          <div className="min-h-screen flex flex-col">
+            <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <main className="flex-grow">
+              <Hero />
+              <InfoSection />
+              <TechDetails />
+              <Contact />
+            </main>
+            <Footer />
+          </div>
+        );
+      };
+
+      // Mount Application
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
   </body>
 </html>
