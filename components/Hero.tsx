@@ -71,7 +71,7 @@ const Hero: React.FC = () => {
               </div>
               <div className="relative aspect-video bg-gray-900">
                  <img 
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuIyCK-2jKscVNaSuG8NLmzedqAmGn_vJ6V8viYW7lT7wuqlmpygdGULIwbEs9_w9KGKAc9hjJ0RBRGou7yaqNx7oO2jOgXCQ-t6xK7VkKnvh8KaI9fHOA3JtWg58U5_fOsM2PWl0-EgM-O7W-2KvY8LHgqlQunQzNjyqhKxsGxtOX3uoFPUnsDxFmW18fKF2N2bYT8PMzdU11tjJMQK_XDHtApK83vZqFuFnS_fO218mwCesOx_-L2UJLcPmdcTMaolj3l681vqA" 
+                    src="https://raw.githubusercontent.com/edgavilan/DaxTer-Creator/refs/heads/main/img/daxtercreator25.gif" 
                     alt="DaxTer Creator Interface"
                     className="w-full h-auto opacity-90 group-hover:opacity-100 transition-opacity"
                  />
