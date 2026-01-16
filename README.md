@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" alt="DaxTer Creator v2.5" src="https://raw.githubusercontent.com/edgavilan/DaxTer-Creator/refs/heads/main/img/daxtercreator25.gif" />
+<img width="600" alt="DaxTer Creator v2.5" src="https://raw.githubusercontent.com/edgavilan/DaxTer-Creator/refs/heads/main/img/daxtercreator25.gif" />
 </div>
 
 # :: DaxTer Creator ::
