@@ -44,17 +44,7 @@ const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
 
           {/* Actions */}
           <div className="flex items-center space-x-4">
-            <div className="relative hidden sm:block group">
-              <input
-                type="text"
-                placeholder="Search software..."
-                className="bg-gray-100 dark:bg-gray-800 border-none rounded-full py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-primary w-48 text-gray-900 dark:text-gray-100 transition-all group-hover:w-56"
-              />
-              <span className="material-icons absolute left-3 top-2 text-gray-400 text-sm pointer-events-none">
-                search
-              </span>
-            </div>
-
+            
             <button
               onClick={toggleDarkMode}
               className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
@@ -96,17 +86,6 @@ const Navbar: React.FC<NavbarProps> = ({ darkMode, toggleDarkMode }) => {
                 {link.name}
               </a>
             ))}
-            {/* Mobile Search Input */}
-            <div className="px-3 py-2 relative sm:hidden">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-lg py-2 px-4 pl-10 text-sm focus:ring-2 focus:ring-primary text-gray-900 dark:text-gray-100"
-              />
-              <span className="material-icons absolute left-6 top-4 text-gray-400 text-sm pointer-events-none">
-                search
-              </span>
-            </div>
           </div>
         </div>
       )}
