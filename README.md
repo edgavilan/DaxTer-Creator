@@ -5,3 +5,5 @@
 # :: DaxTer Creator ::
 
 Convierte eficientemente archivos voluminosos a formato comprimido para ahorrar espacio valioso en la memory stick sin perder jugabilidad.
+
+https://edgavilan.github.io/DaxTer-Creator
